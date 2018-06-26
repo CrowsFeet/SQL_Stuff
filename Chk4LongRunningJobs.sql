@@ -1,3 +1,6 @@
+-- old script but a good one.
+-- why oh why does SQL still make it difficult to get the proper name of a SQL Agent from the
+-- sysprocess details. ho hummm
 use DBA
 go
 /*

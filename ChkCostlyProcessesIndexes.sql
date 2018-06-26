@@ -1,4 +1,4 @@
-
+-- lots of useful scripts here.
 -- missing indexes by DB
 SELECT DatabaseName = DB_NAME(database_id) ,
   [Number Indexes Missing] = count(*) 

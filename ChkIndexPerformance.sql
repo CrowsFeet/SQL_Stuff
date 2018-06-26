@@ -1,3 +1,4 @@
+-- Index uage stats. again one i use a fair bit.
 use <DBName_Here>
 go
 -- shows index usage

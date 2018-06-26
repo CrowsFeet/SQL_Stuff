@@ -1,3 +1,4 @@
+-- I use this script quite a lot to review bad queries.
 SELECT TOP 500
   [Average IO] = (total_logical_reads + total_logical_writes) / qs.execution_count,
   [Total IO] = (total_logical_reads + total_logical_writes),

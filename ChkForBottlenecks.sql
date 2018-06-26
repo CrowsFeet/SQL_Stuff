@@ -1,3 +1,4 @@
+-- Lots of little good ones here
 SELECT user_seeks * avg_total_user_cost * (avg_user_impact * 0.01) AS index_advantage,
    migs.last_user_seek,
    mid.statement AS 'Database.Schema.Table',

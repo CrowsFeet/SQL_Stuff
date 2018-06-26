@@ -1,4 +1,4 @@
-
+ -- more useful indexy type scripts.
 USE <DBName_Here>
 go
 -- index used for inserts updates and deletes

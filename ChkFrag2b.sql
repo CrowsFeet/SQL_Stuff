@@ -1,3 +1,4 @@
+-- I have an automated process that does this, but this is the manual version.
 set nocount on
 
 DECLARE @Table1 TABLE

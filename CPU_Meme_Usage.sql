@@ -1,3 +1,4 @@
+-- Nice little quick check for CPU Usage and Memory Used
 DECLARE 
     @cpuUsage float ,   -- % CPU usage
     @memoryUsage float -- % memory usage

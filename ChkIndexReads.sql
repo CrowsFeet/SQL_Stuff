@@ -1,3 +1,4 @@
+-- Check when an index was last used
 --select * from  sys.dm_db_index_usage_stats
 
 SELECT dbschemas.[name] as 'Schema', 

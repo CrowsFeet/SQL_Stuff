@@ -1,3 +1,4 @@
+-- Script to get a list of active connections on a SQL Server
 USE master
 go
 SELECT db_name(dbid) as DatabaseName, count(dbid) as NoOfConnections,

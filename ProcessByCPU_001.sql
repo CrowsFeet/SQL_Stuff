@@ -1,3 +1,6 @@
+-- This process will list what is running per CPU.
+-- nifty tool to investigate whats running and if
+-- its parallelised.
 SELECT
   sch.cpu_id
 ,sch.is_idle AS idle

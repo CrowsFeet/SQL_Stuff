@@ -1,3 +1,12 @@
+-- A long time ago, in a DBA role far far away, I was tasked with a problem a developer was encountering.
+-- the problem was a SQL command that they were calling from a front end application, kept stalling or taking several seconds to
+-- come back with its results, even though the SQL code ran almost instantly when run from SQL Management Studio (SSMS).
+--
+-- After a lot of playing about and head scratching and googling (the early days of google), I found an obscure comment from a
+-- DBA who had the same issue.
+-- turns out that without the arithabout = on, the front end application was not sure if the SQL command had completed or not.
+
+-- This is why I absolutely tell any developer to NEVER write raw t-sql in any front end application. create a stored procedure.
 DECLARE @options INT 
 SELECT @options = @@OPTIONS 
 

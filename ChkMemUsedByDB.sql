@@ -1,3 +1,4 @@
+-- very useful scripts
 -- Note: querying sys.dm_os_buffer_descriptors
 -- requires the VIEW_SERVER_STATE permission.
 

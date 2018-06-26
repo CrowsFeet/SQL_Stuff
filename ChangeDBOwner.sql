@@ -1,3 +1,7 @@
+-- Oldy but a goody.
+-- I am still encountering databases that have lost their owner, which stops you from viewing the database
+-- Properties.
+-- this will sort it.
 USE <DBName_Here>
 GO
 

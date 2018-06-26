@@ -1,3 +1,4 @@
+-- SQL Server does store CPU %. however, it only stores the last 24hours and only in 1min intervals.
 DECLARE @ts_now BIGINT
 
 select @ts_now = cpu_ticks / (cpu_ticks/ms_ticks) from sys.dm_os_sys_info

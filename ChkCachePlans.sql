@@ -27,7 +27,7 @@ GO
 
 -- The following example returns a breakdown of the memory used by all compiled plans in the cache.
 SELECT plan_handle, ecp.memory_object_address AS CompiledPlan_MemoryObject, 
-    omo.memory_object_address, pages_allocated_count, type, page_size_in_bytes 
+    omo.memory_object_address, pages_in_bytes, type, page_size_in_bytes 
 FROM sys.dm_exec_cached_plans AS ecp 
 JOIN sys.dm_os_memory_objects AS omo 
     ON ecp.memory_object_address = omo.memory_object_address 
@@ -38,7 +38,7 @@ GO
 
 ------------------------------------------------------
 -- http://dba.stackexchange.com/questions/74091/optimize-for-ad-hoc-workload
-
+-- really good one this one.
 SELECT objtype AS [CacheType]
     ,count_big(*) AS [Total Plans]
     ,sum(cast(size_in_bytes AS DECIMAL(18, 2))) / 1024 / 1024 AS [Total MBs]

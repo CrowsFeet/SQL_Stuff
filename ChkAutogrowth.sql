@@ -1,3 +1,4 @@
+-- another script that I use to review a SQL Server.
 -- auto growth settings for data and log files
 	select DB_NAME(mf.database_id) database_name
 	, mf.name logical_name

@@ -1,3 +1,6 @@
+-- One of the first scripts I run when I hear those imortal hell desk words...
+-- the server is slow.
+-- the script will look at the locking bloking on a SQL Server and list who is the main blocker.
 SET NOCOUNT ON
 GO
 SELECT SPID, BLOCKED, REPLACE (REPLACE (T.TEXT, CHAR(10), ' '), CHAR (13), ' ' ) AS BATCH

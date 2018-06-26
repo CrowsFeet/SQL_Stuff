@@ -1,3 +1,4 @@
+-- this script will list the database and log file size for each database on a server
 with fs
 as
 (

@@ -1,3 +1,4 @@
+-- This is probably one of the first scripts I run on a SQL Server, whenever I start a new job.
 SELECT
   SUBSTRING(mid.statement,1,CHARINDEX(']',mid.statement,1)) AS Database_Name,
   --REPLACE(SUBSTRING(mid.statement,CHARINDEX(']',mid.statement,1)+2,len(mid.statement)),'[dbo].','') as Database_Name,

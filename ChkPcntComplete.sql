@@ -1,3 +1,4 @@
+-- good one to check the percentage complete of a specific process.
 USE master
 GO
 SELECT  session_id AS SPID ,

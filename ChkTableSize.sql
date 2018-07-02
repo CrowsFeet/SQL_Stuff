@@ -1,3 +1,4 @@
+-- First of many. this reports on table details for a specific database.
 SELECT 
     t.NAME AS TableName,
     s.Name AS SchemaName,

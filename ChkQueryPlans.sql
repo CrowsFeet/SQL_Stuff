@@ -1,3 +1,4 @@
+-- some useful query plan scripts.
 ;WITH XMLNAMESPACES 
 (DEFAULT 'http://schemas.microsoft.com/sqlserver/2004/07/showplan')
 SELECT --TOP 10
@@ -42,7 +43,7 @@ SELECT cache_address, name, [type]
 FROM sys.dm_os_memory_cache_counters 
 WHERE [type] LIKE 'CACHE%'
 
-USE prod_eo_eo0
+USE <DB_Name_Here>
 go
 -- check for single and multi use plans
 DECLARE @singleUse FLOAT, @multiUse FLOAT, @total FLOAT

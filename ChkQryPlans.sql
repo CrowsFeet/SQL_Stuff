@@ -1,3 +1,4 @@
+-- queries that get the cache plans
 USE master
 go
 SELECT

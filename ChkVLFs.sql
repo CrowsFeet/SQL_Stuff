@@ -1,3 +1,4 @@
+-- another first of many. this will check the VLF's of all databases on a server.
 SET NOCOUNT ON;
 
 /* declare variables required */

@@ -1,11 +1,14 @@
+-- get the backup history from the msdb db
 SELECT 
 CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS Server, 
 msdb.dbo.backupset.database_name, 
 msdb.dbo.backupset.backup_start_date, 
 msdb.dbo.backupset.backup_finish_date, 
 msdb.dbo.backupset.expiration_date, 
+--msdb..backupset.type,
 CASE msdb..backupset.type 
 WHEN 'D' THEN 'Database' 
+WHEN 'I' THEN 'Incremental' 
 WHEN 'L' THEN 'Log' 
 END AS backup_type, 
 msdb.dbo.backupset.backup_size, 

@@ -1,4 +1,5 @@
-USE HostedMaintenance
+-- reports on the replication latency
+USE DBA
 go
 
 -- Check Latency
@@ -13,7 +14,7 @@ set @threshold = @minutes * 60 * 1000
 --Specify email distribution list, To and CC
 ---------------------------------------------------------------------------
 declare @Tolist varchar(100)
-set @Tolist = 'agazdowicz@ecisolutions.com'
+set @Tolist = 'myemail@email.com'
 
 declare @CClist varchar(100)
 set @CClist = ''

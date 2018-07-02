@@ -1,4 +1,4 @@
-
+-- yes another page life expectancy checker
 -- ple_per_4gb of every NUMA node should be > 300 sec !
 SELECT numa_node = ISNULL(NULLIF(ple.instance_name, ''), 'ALL'), 
     ple_sec = ple.cntr_value, db_node_mem_GB = dnm.cntr_value*8/1048576,

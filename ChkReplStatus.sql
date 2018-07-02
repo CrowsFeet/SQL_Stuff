@@ -1,4 +1,5 @@
-use HostedMaintenance
+-- Checks the replication status
+use DBA
 go
 
 ---------------------------------------------------------------------------
@@ -15,13 +16,13 @@ set @date = convert(date,getdate())   -- The job failure trace back is defined o
 --Specify the publisher SQL instance name
 ---------------------------------------------------------------------------
 declare @publisher varchar(100)        --
-set @publisher = 'ECIC-SQL07'
+set @publisher = '<ServerName_Here>'
 
 ---------------------------------------------------------------------------
 --Specify email distribution list, To and CC
 ---------------------------------------------------------------------------
 declare @Tolist varchar(100)
-set @Tolist = 'agazdowicz@ecisolutions.com'
+set @Tolist = 'myemail@email.com'
 
 declare @CClist varchar(100)
 set @CClist = ''

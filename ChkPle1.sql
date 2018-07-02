@@ -1,3 +1,5 @@
+-- nice little one that checks the page life expectancy of a server.
+
 --SELECT  @@servername AS INSTANCE
 --,[object_name]
 --,[counter_name]

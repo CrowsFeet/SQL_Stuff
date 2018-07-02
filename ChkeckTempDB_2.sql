@@ -1,3 +1,4 @@
+-- More scripts for checking the tempdb
 select hostname,elapsed_time_seconds,session_id, is_snapshot, blocked, lastwaittype, cpu, physical_io,  open_tran, cmd 
 from sys.dm_tran_active_snapshot_database_transactions a
 join master..sysprocesses b

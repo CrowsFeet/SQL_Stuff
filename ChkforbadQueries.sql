@@ -1,3 +1,6 @@
+-- More scripts that will show you how bad/good your system is...
+
+
 -- Check for tempdb spills. 
 -- missing join predicates or columns with no statistics and so on.
 DECLARE @database_name NVARCHAR(128) = 'AdventureWorks2014';

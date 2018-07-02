@@ -1,3 +1,4 @@
+-- Brilliant script that shows you how many cpu's there are and what is running on each one.
 SELECT
   sch.cpu_id
  ,sch.is_idle AS idle

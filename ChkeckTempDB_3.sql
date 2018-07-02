@@ -1,3 +1,5 @@
+-- More scripts for checking the tempdb
+
 SELECT
 SUM (user_object_reserved_page_count)*8 as usr_obj_kb,
 SUM (internal_object_reserved_page_count)*8 as internal_obj_kb,

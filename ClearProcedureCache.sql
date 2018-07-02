@@ -1,3 +1,4 @@
+-- be careful when you use this script. especially on a production server.
 USE master
 go
 --DBCC FREESYSTEMCACHE('SQL Plans')
@@ -18,7 +19,7 @@ IF @MB > 10
         END
 ELSE
         BEGIN
-                RAISERROR ('Only %s MB is allocated to single-use plan cache – no need to clear cache now.', 10, 1, @StrMB)
+                RAISERROR ('Only %s MB is allocated to single-use plan cache â€“ no need to clear cache now.', 10, 1, @StrMB)
                 -- Note: this is only a warning message and not an actual error.
         END
 GO 
@@ -38,6 +39,6 @@ GO
 --            DBCC FREEPROCCACHE
             RAISERROR ('Nada', 10, 1, @StrMB)
     ELSE
-            RAISERROR ('Only %s MB is allocated to single-use plan cache – no need to clear cache now.', 10, 1, @StrMB)
+            RAISERROR ('Only %s MB is allocated to single-use plan cache â€“ no need to clear cache now.', 10, 1, @StrMB)
     GO
 */    

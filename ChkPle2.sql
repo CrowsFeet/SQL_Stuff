@@ -1,3 +1,4 @@
+-- another one that shows page life expectancy.
 
 --select SUM(aggregated_record_length_in_bytes) [SpaceUsed] from sys.dm_tran_top_version_generators
 --GROUP by database_id

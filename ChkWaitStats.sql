@@ -1,3 +1,5 @@
+-- displays that top wait stats on a server.
+
 --SELECT
 --    [er].[session_id],
 --    [es].[program_name],

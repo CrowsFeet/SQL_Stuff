@@ -1,3 +1,6 @@
+-- old but still worth knowing about.
+-- the user extract process given by MS does not list the SID.
+-- this one does. (or did, I havent checked this code to see if its changed).
 USE master
 GO
 -- GRANT VIEW ANY DATABASE TO Public

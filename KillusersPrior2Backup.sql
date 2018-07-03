@@ -1,3 +1,4 @@
+-- various ways to drop users prior to a backup
 -- quick way to drop users
 ALTER DATABASE <Database_Name> SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 GO

@@ -1,3 +1,6 @@
+-- why does MS make is so difficult to find the SQL Agent job details when investigating processes.
+-- this helps
+-- requires fn_hex_to_char function to be installed.
 SET NOCOUNT ON 
 
 DECLARE @c CHAR(1000),

@@ -1,3 +1,5 @@
+-- SQL Stored quite a lot of data. some of it more useful than others.
+-- here is another useful one.
 SET NOCOUNT ON
 
 DECLARE @SQL1 NVARCHAR(4000),

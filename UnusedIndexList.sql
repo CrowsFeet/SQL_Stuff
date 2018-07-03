@@ -1,3 +1,5 @@
+-- hmmm needs a table.
+-- i am sure i have better ones than this.
 --SELECT * FROM Tbl_Indexes
 ;WITH cte
 AS

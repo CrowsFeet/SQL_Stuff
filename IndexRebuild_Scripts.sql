@@ -1,4 +1,9 @@
-USE [HostedMaintenance]
+-- My version of the index defrag process.
+-- this one is a little bit clever as it also stored historical info on the processing.
+-- depending on the level of detail, you can see basic info (db defrag start and end) 
+-- or detailed info (db start and end and table start and end).
+-- there are also sql agent jobs for this.
+USE [DBA]
 GO
 
 /****** Object:  Table [dbo].[tbl_DefragAudit]    Script Date: 02/05/2018 09:08:25 ******/
@@ -21,7 +26,7 @@ GO
 
 
 
-USE [HostedMaintenance]
+USE [DBA]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[usp_DefragDBSelectionMain]') AND type in (N'P', N'PC'))
@@ -31,7 +36,7 @@ CREATE PROCEDURE [dbo].[usp_DefragDBSelectionMain]
 
 @RebuildType INT = 0,
 @LogAudit INT = 0--,
---@Bypass INT = 0 -- no longer needed as HZN_SWEETBRIAR is not live
+--@Bypass INT = 0 -- no longer needed as DB is not live
 
 AS
 
@@ -43,9 +48,9 @@ AS
 --
 -- Created : 10/2/2016
 --
--- History : 01/03/2016 Altered SP to handle and additional parameter for REBUILD/REORGANIZE and Also to Bypass HZN_SwetBriar Db for now.
---			 22/03/2016 Altered SP and removed the HZN_SWEETBRIAR filter. the DB is now stable and live.
---           23/02/2017 Altered SP and added update statistics per db into the process. and bypass HZN_WHITTAKERS
+-- History : 01/03/2016 Altered SP to handle and additional parameter for REBUILD/REORGANIZE and Also to Bypass specific Db for now.
+--			 22/03/2016 Altered SP and removed the db filter. the DB is now stable and live.
+--           23/02/2017 Altered SP and added update statistics per db into the process. and bypass specific db
 --			 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -68,10 +73,6 @@ AND CHARINDEX('_PLAY',name,1)=0
 or name = 'msdb'
 ORDER BY 1
 
---IF @Bypass = 1
---	DELETE FROM @Table WHERE DBName like '%Sweet%'
---DELETE FROM @Table WHERE DBName = 'HZN_WHITTAKERS'
-
 --SELECT * FROM @Table
 
 WHILE EXISTS (SELECT TOP 1 DBName FROM @Table WHERE Completed = 0)
@@ -81,14 +82,14 @@ BEGIN
     WHERE Completed = 0
     ORDER BY DBName ASC
 
-	INSERT INTO HostedMaintenance.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
+	INSERT INTO DBA.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
 	VALUES(@@SERVERNAME,'Starting Index Defrag on Database ' + QUOTENAME(@DBName),GETDATE(), NULL, NULL)
 
 -- lets defrag some indexes
-		--SET @Cmd = 'EXEC HostedMaintenance.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName)
+		--SET @Cmd = 'EXEC DBA.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName)
 
 		IF @RebuildType = 0
-			SET @Cmd = 'EXEC HostedMaintenance.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName) + ', ' + '0'
+			SET @Cmd = 'EXEC DBA.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName) + ', ' + '0'
 
 		IF @LogAudit = 0
 			SET @Cmd = @Cmd + ', ' + '0'
@@ -97,7 +98,7 @@ BEGIN
 			SET @Cmd = @Cmd + ', ' + '1'
 
 		IF @RebuildType = 1
-			SET @Cmd = 'EXEC HostedMaintenance.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName) + ', ' + '1'
+			SET @Cmd = 'EXEC DBA.dbo.usp_ReIndexTables ' + QUOTENAME(@DBName) + ', ' + '1'
 
 		IF @RebuildType = 1 AND @LogAudit = 0
 			SET @Cmd = @Cmd + ', ' + '0'
@@ -112,14 +113,14 @@ BEGIN
 
 		SET @Cmd = ''''
 -- update statistics time
-		IF @DBName <> 'HZN_WHITTAKERS'
+		IF @DBName <> '<Add_DB_To_Ignore>'
 		BEGIN
-			SET @Cmd = 'EXEC HostedMaintenance.dbo.usp_UpdateStats ' + QUOTENAME(@DBName)
+			SET @Cmd = 'EXEC DBA.dbo.usp_UpdateStats ' + QUOTENAME(@DBName)
 
 			EXEC (@Cmd)
 		END
 
-	INSERT INTO HostedMaintenance.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
+	INSERT INTO DBA.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
 	VALUES(@@SERVERNAME,'Completed Index Defrag on Database ' + QUOTENAME(@DBName),GETDATE(), NULL, NULL)
 
 	UPDATE @Table SET Completed = 1 WHERE DBName = @DBName
@@ -155,7 +156,7 @@ AS
 --					    option does not scan the tables fully.
 --
 --			 01/03/2016 Altered SP to handle and additional parameter for REBUILD/REORGANIZE and added Table by Table Audit data
---			 16/03/2016 Altered SP to handle a few combinations mostly around HZN_COS db. effectively if its about to do perform
+--			 16/03/2016 Altered SP to handle a few combinations mostly around a large db. effectively if its about to do perform
 --						an index defrag on the big 4 tables (AUDIT, DETAIL, ENTRY and SUMMARY), then choose REORGANIZE regardless
 --						of what parameters have been passed into the SP. after Reorganising the big 4, there is an update statistics
 --						set for them.
@@ -186,7 +187,7 @@ INSERT INTO @Indexes
 SELECT ''' + 
 @DBName + ''' as DBName,
 CASE 
-WHEN (indexstats.avg_fragmentation_in_percent) > 10 AND ''' + @DBName + ''' = ''HZN_WHITTAKERS'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE''
+WHEN (indexstats.avg_fragmentation_in_percent) > 10 AND ''' + @DBName + ''' = ''<DB_To_Ignore>'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE''
 WHEN indexstats.avg_fragmentation_in_percent >30 and ''' + @RebuildType + ''' = ''0'' then ''ALTER INDEX '' + dbindexes.[name] + '' ON '' +dbschemas.[name] + ''.'' + dbtables.[name] + '' REBUILD'' 
 WHEN indexstats.avg_fragmentation_in_percent >30 and ''' + @RebuildType + ''' = ''1'' then ''ALTER INDEX '' + dbindexes.[name] + '' ON '' +dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE '' 
 WHEN (indexstats.avg_fragmentation_in_percent > 10 and indexstats.avg_fragmentation_in_percent <= 30) and ''' + @RebuildType + ''' = ''0'' then ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REBUILD''
@@ -225,7 +226,7 @@ BEGIN
 	--SET @SQL = ''USE '' + @DBName1 + '' + char(13) + '' '' + char(13)
 	SET @SQL = @IndexDeFrag1--
 	SET @StartTime = GETDATE()
-	--INSERT INTO HostedMaintenance.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
+	--INSERT INTO DBA.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
 	--VALUES(@@SERVERNAME,''Starting the following...'' + @IndexDeFrag1,GETDATE())
 
 	--PRINT @SQL
@@ -234,7 +235,7 @@ BEGIN
 	SET @EndTime = GETDATE()
 
 	IF ' + @LogAudit + ' = 1
-	INSERT INTO HostedMaintenance.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
+	INSERT INTO DBA.dbo.tbl_DefragAudit (sServerName, sText, dDate, dStartTime, dEndTime)
 	VALUES(@@SERVERNAME,''Completed the following...'' + @IndexDeFrag1,GETDATE(), @StartTime, @EndTime)
 
 	FETCH NEXT FROM cloopme 
@@ -246,17 +247,6 @@ END;
 CLOSE cloopme;
 DEALLOCATE cloopme;
 
-IF ''' + @DBName + ''' = ''HZN_COS''
-BEGIN
-SET @BuildStats = ''UPDATE STATISTICS dbo.ENTRY ''
-EXEC (@BuildStats)
-SET @BuildStats = ''UPDATE STATISTICS dbo.DETAIL ''
-EXEC (@BuildStats)
-SET @BuildStats = ''UPDATE STATISTICS dbo.AUDIT ''
-EXEC (@BuildStats)
-SET @BuildStats = ''UPDATE STATISTICS dbo.SUMMARY ''
-EXEC (@BuildStats)
-END
 '
 
 --SELECT LEN(@SQL1)
@@ -264,13 +254,6 @@ END
 EXEC (@SQL1)
 
 --EXEC sp_updatestats
-/*
-WHEN dbtables.[name] = ''DETAIL'' AND ''' + @DBName + ''' = ''HZN_COS'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE '' 
-WHEN dbtables.[name] = ''ENTRY'' AND ''' + @DBName + ''' = ''HZN_COS'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE '' 
-WHEN dbtables.[name] = ''AUDIT'' AND ''' + @DBName + ''' = ''HZN_COS'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE '' 
-WHEN dbtables.[name] = ''SUMMARY'' AND ''' + @DBName + ''' = ''HZN_COS'' THEN ''ALTER INDEX '' + dbindexes.[name] + '' ON '' + dbschemas.[name] + ''.'' + dbtables.[name] + '' REORGANIZE '' 
-
-*/
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[usp_UpdateStats]') AND type in (N'P', N'PC'))
@@ -286,9 +269,6 @@ AS
 SET NOCOUNT ON	
 
 DECLARE @CMD1 NVARCHAR(4000)
-
---DECLARE @DBNAME NVARCHAR(255)
---SET @DBNAME = 'HZN_TOTAL'
 
 SET @CMD1=''
 SET @CMD1 = '
@@ -390,7 +370,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'IndexReb
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'TSQL', 
-		@command=N'USE HostedMaintenance
+		@command=N'USE DBA
 go
 
 -- 2 Params
@@ -398,7 +378,7 @@ go
 -- Param 2 is Log Audit Detailed 1 = yes 0 = No
 
 EXEC [usp_DefragDBSelectionMain] 0,0', 
-		@database_name=N'HostedMaintenance', 
+		@database_name=N'DBA', 
 		@flags=0
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

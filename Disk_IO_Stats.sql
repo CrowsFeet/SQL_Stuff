@@ -1,3 +1,4 @@
+-- shows the biggest server users.
 select db_name(io.database_id) as database_name,
 	mf.physical_name as file_name,
 	io.*

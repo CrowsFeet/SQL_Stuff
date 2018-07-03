@@ -1,3 +1,4 @@
+-- lists the index usage on a database
 SELECT 
 	db_name(ius.database_id) AS DatabaseName,
 	t.NAME AS TableName,
@@ -7,5 +8,5 @@ SELECT
 FROM sys.dm_db_index_usage_stats ius
 INNER JOIN sys.indexes i ON i.OBJECT_ID = ius.OBJECT_ID AND i.index_id = ius.index_id
 INNER JOIN sys.tables t ON t.OBJECT_ID = i.object_id
-WHERE database_id = DB_ID('HZN_QUALITY')
+WHERE database_id = DB_ID('<Add DB Name Here>')
 ORDER BY ius.user_seeks + ius.user_scans + ius.user_lookups DESC

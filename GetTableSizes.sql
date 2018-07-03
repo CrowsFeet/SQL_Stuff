@@ -1,3 +1,5 @@
+-- there might already be one of these.
+-- does what it says on the tin
 SELECT 
     t.NAME AS TableName,
     s.Name AS SchemaName,

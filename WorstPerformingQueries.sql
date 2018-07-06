@@ -37,4 +37,4 @@ INNER JOIN sys.databases
 ON dm_exec_sql_text.dbid = databases.database_id
 INNER JOIN sys.dm_exec_cached_plans 
 ON dm_exec_cached_plans.plan_handle = dm_exec_query_stats.plan_handle
-WHERE databases.name = 'HZN_QUALITY'
+WHERE databases.name = '<ADD DB Name Here>'
